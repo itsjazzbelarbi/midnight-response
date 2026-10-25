@@ -9,7 +9,7 @@
   var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   function store(k, v) { try { if (v === undefined) return sessionStorage.getItem(k); sessionStorage.setItem(k, v); } catch (e) {} }
 
-  if (fx) { html.classList.add('gsap'); gsap.registerPlugin(ScrollTrigger); }
+  if (fx) { html.classList.add('gsap'); gsap.registerPlugin(ScrollTrigger); ScrollTrigger.config({ ignoreMobileResize: true }); }
 
   /* ================= Audio (all synthesised) ================= */
   var A = {
@@ -82,12 +82,26 @@
     }
   };
 
-  var sndBtn = $('sound');
-  function paintSnd() { sndBtn.textContent = A.on ? 'Sound on' : 'Sound off'; sndBtn.setAttribute('aria-pressed', A.on); }
-  sndBtn.addEventListener('click', function () {
-    if (!A.on) { if (!A.start()) return; A.set(true); store('mr-snd', '1'); } else { A.set(false); store('mr-snd', '0'); }
-    paintSnd();
+  var sndBtns = qsa('.snd');
+  function paintSnd() { sndBtns.forEach(function (b) { b.textContent = A.on ? 'Sound on' : 'Sound off'; b.setAttribute('aria-pressed', A.on); }); }
+  sndBtns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (!A.on) { if (!A.start()) return; A.set(true); store('mr-snd', '1'); } else { A.set(false); store('mr-snd', '0'); }
+      paintSnd();
+    });
   });
+
+  /* ================= Phone menu ================= */
+  var menu = $('menu'), mnav = $('mnav');
+  function setMenu(open) {
+    mnav.hidden = !open; menu.setAttribute('aria-expanded', open);
+    if (lenis) { if (open) lenis.stop(); else lenis.start(); }
+    body.style.overflow = open ? 'hidden' : '';
+  }
+  menu.addEventListener('click', function () { setMenu(mnav.hidden); });
+  qsa('#mnav a').forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !mnav.hidden) setMenu(false); });
+  window.addEventListener('resize', function () { if (innerWidth > 700 && !mnav.hidden) setMenu(false); });
 
   /* ================= Smooth scroll ================= */
   var lenis = null;
@@ -102,7 +116,7 @@
     a.addEventListener('click', function (e) {
       var id = a.getAttribute('href'); if (id.length < 2) return;
       var el = id === '#top' ? 0 : qs(id); if (el === null) return;
-      if (lenis) { e.preventDefault(); lenis.scrollTo(el, { duration: 1.7, offset: id === '#top' ? 0 : -10 }); }
+      if (lenis) { e.preventDefault(); lenis.scrollTo(el, { duration: 1.7, offset: id === '#top' ? 0 : -10, force: true }); }
     });
   });
 
@@ -260,11 +274,11 @@
   paintSnd();
 
   /* ================= Hero: flashlight ================= */
-  var FIG = { x: 0.289, y: 0.68 }, IMG = { w: 2400, h: 1350 };
+  var sceneEl = qs('.scene.dark'), FIG = { x: 0.289, y: 0.68 }, IMG = { w: 2400, h: 1350 };
   var tx = 0.4, ty = 0.55, cx = tx, cy = ty, moved = false, torchOn = true, baseR = 280;
 
   function figurePx() {
-    var W = hero.clientWidth, H = hero.clientHeight, bw = W >= 900 ? W * 0.74 : W, s = Math.max(bw / IMG.w, H / IMG.h), w = IMG.w * s, h = IMG.h * s;
+    var W = hero.clientWidth, H = sceneEl.clientHeight, bw = W >= 900 ? W * 0.74 : W, s = Math.max(bw / IMG.w, H / IMG.h), w = IMG.w * s, h = IMG.h * s;
     return { x: (W - bw) + (bw - w) * 0.35 + FIG.x * w, y: H - h + FIG.y * h };
   }
   function placeFound() { var f = figurePx(); found.style.setProperty('--fx', f.x + 'px'); found.style.setProperty('--fy', f.y + 'px'); }
@@ -275,8 +289,8 @@
     cx += (tx - cx) * 0.18; cy += (ty - cy) * 0.18;
     var flick = reduce ? 1 : 1 + Math.sin(now / 90) * 0.012 + (Math.random() < 0.004 ? -0.12 : 0);
     var r = baseR * flick * T.k;
-    hero.style.setProperty('--x', (cx * 100).toFixed(2) + '%');
-    hero.style.setProperty('--y', (cy * 100).toFixed(2) + '%');
+    hero.style.setProperty('--x', (cx * hero.clientWidth).toFixed(1) + 'px');
+    hero.style.setProperty('--y', (cy * hero.clientHeight).toFixed(1) + 'px');
     hero.style.setProperty('--r', Math.max(0.1, r).toFixed(1) + 'px');
     if (torchOn && T.k > 0.85 && window.scrollY < 60) {
       var f = figurePx(), px = cx * hero.clientWidth, py = cy * hero.clientHeight, d = Math.hypot(px - f.x, py - f.y);
@@ -295,12 +309,20 @@
   }
   hero.addEventListener('pointermove', function (e) { aim(e.clientX, e.clientY); });
   hero.addEventListener('pointerdown', function (e) { aim(e.clientX, e.clientY); });
+  var guide = false;
   if (!reduce) {
     (function idle(now) {
       if (moved) return;
-      tx = 0.5 + Math.sin(now / 2400) * 0.2; ty = 0.58 + Math.sin(now / 1500) * 0.07;
+      if (guide) { var f = figurePx(); tx = (f.x + 70) / hero.clientWidth; ty = (f.y - 10) / hero.clientHeight; }
+      else { tx = 0.5 + Math.sin(now / 2400) * 0.2; ty = 0.58 + Math.sin(now / 1500) * 0.07; }
       requestAnimationFrame(idle);
     })(0);
+  }
+  // on a phone nobody is hovering, so the beam finds the window by itself unless you tap first
+  if (!fine) {
+    hint.textContent = 'Tap the building to aim your flashlight.';
+    var startGuide = function () { setTimeout(function () { if (!moved) guide = true; }, 3200); };
+    if (store('mr-intro') === '1' && finished) startGuide(); else document.addEventListener('intro-done', startGuide);
   }
   function setTorch(on) { torchOn = on; body.classList.toggle('torch-off', !on); A.burst(0.06, 3000, 0.25); if (!on) found.classList.remove('on'); }
 
@@ -308,7 +330,7 @@
   var cv = $('rain');
   if (cv && !reduce) {
     var g = cv.getContext('2d'), drops = [], W = 0, H = 0;
-    var size = function () { W = cv.width = hero.clientWidth; H = cv.height = hero.clientHeight; drops = []; for (var i = 0; i < Math.min(160, W / 8); i++) drops.push({ x: Math.random() * W, y: Math.random() * H, l: 10 + Math.random() * 18, v: 11 + Math.random() * 9 }); };
+    var size = function () { W = cv.width = hero.clientWidth; H = cv.height = hero.clientHeight; drops = []; for (var i = 0; i < Math.min(fine ? 160 : 55, W / (fine ? 8 : 9)); i++) drops.push({ x: Math.random() * W, y: Math.random() * H, l: 10 + Math.random() * 18, v: 11 + Math.random() * 9 }); };
     size(); window.addEventListener('resize', size);
     (function rain() {
       if (!document.hidden && window.scrollY < H) {
@@ -332,7 +354,7 @@
       x.putImageData(img, 0, 0);
     }
     noise();
-    if (!reduce) setInterval(function () { if (!document.hidden) noise(); }, 110);
+    if (!reduce) setInterval(function () { if (!document.hidden) noise(); }, fine ? 110 : 260);
   })();
 
   if (fine) {
@@ -400,7 +422,15 @@
 
   /* ================= Trailer ================= */
   var vid = $('vid'), vp = $('vidplay'), player = $('player');
-  vp.addEventListener('click', function () { vid.play(); });
+  vp.addEventListener('click', function () {
+    vid.play();
+    if (innerWidth < 700) {
+      try {
+        if (vid.webkitEnterFullscreen) vid.webkitEnterFullscreen();
+        else if (vid.requestFullscreen) vid.requestFullscreen().then(function () { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(function () {}); }).catch(function () {});
+      } catch (e) {}
+    }
+  });
   vid.addEventListener('play', function () { player.classList.add('playing'); A.setDuck(0.12); });
   vid.addEventListener('pause', function () { A.setDuck(1); });
   vid.addEventListener('ended', function () { A.setDuck(1); player.classList.remove('playing'); });
@@ -416,6 +446,7 @@
   lb.addEventListener('click', function () { if (lb.close) lb.close(); else lb.removeAttribute('open'); });
 
   /* ================= Controls: keys light up when you press them ================= */
+  if (!fine) { var kl = $('kitlede'); if (kl) kl.textContent = 'On a computer these are the keys. On a phone or iPad the game gives you on-screen touch controls.'; }
   var keyTiles = {}; qsa('.key').forEach(function (k) { keyTiles[k.getAttribute('data-k')] = k; });
   function hitKey(k) {
     var t = keyTiles[k]; if (!t) return;

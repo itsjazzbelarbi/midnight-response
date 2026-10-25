@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#06080b">
 <title>Midnight Response</title>
 <meta name="description" content="A first-person horror game on Roblox. Someone called 911 from a school that closed ten years ago. You are the one who answers.">
 <meta property="og:title" content="Midnight Response">
@@ -52,6 +53,14 @@
 <div id="glow" aria-hidden="true"></div>
 <div id="tclock" aria-hidden="true">23:47</div>
 
+<div id="mnav" hidden>
+  <a href="#about">About</a>
+  <a href="#trailer">Trailer</a>
+  <a href="#scenes">Scenes</a>
+  <a href="#kit">Controls</a>
+  <button type="button" class="snd snd-m" aria-pressed="false">Sound off</button>
+</div>
+
 <header class="bar" id="bar">
   <a class="mark" href="#top">Midnight Response</a>
   <nav>
@@ -59,8 +68,9 @@
     <a href="#trailer">Trailer</a>
     <a href="#scenes">Scenes</a>
     <a href="#kit">Controls</a>
-    <button type="button" id="sound" class="snd" aria-pressed="false" aria-label="Sound">Sound off</button>
+    <button type="button" id="sound" class="snd snd-d" aria-pressed="false" aria-label="Sound">Sound off</button>
     <a class="play" href="https://www.roblox.com/games/121720896658939/Midnight-Response" rel="noopener">Play</a>
+    <button type="button" id="menu" class="menubtn" aria-expanded="false" aria-controls="mnav" aria-label="Menu"><i></i><i></i></button>
   </nav>
 </header>
 
@@ -145,7 +155,7 @@
   <!-- SCENES -->
   <section class="scenes" id="scenes">
     <div class="hz" id="hz">
-      <div class="wrap hz-head"><h2 class="rv"><span>Scenes</span></h2></div>
+      <div class="wrap hz-head"><h2 class="rv"><span>Scenes</span></h2><p class="swipe">Swipe to look around.</p></div>
       <div class="track" id="track">
         <figure><button type="button" data-full="media/aerial.jpg" data-cap="Backup arrives from the access road."><img src="media/aerial.jpg" alt="Aerial view of police cars arriving at the school parking lot at night"></button><figcaption>Backup arrives from the access road.</figcaption></figure>
         <figure><button type="button" data-full="media/cruiser.jpg" data-cap="First unit on scene."><img src="media/cruiser.jpg" alt="Police cruiser behind tape and traffic cones"></button><figcaption>First unit on scene.</figcaption></figure>
@@ -162,7 +172,7 @@
   <section class="kit" id="kit">
     <div class="wrap">
       <h2 class="rv"><span>Your belt</span></h2>
-      <p class="lede" data-fade>Press a key on your keyboard to try it.</p>
+      <p class="lede" data-fade id="kitlede">Press a key on your keyboard to try it.</p>
       <div class="keys" id="keys">
         <div class="key" data-k="f"><kbd>F</kbd><span>Flashlight</span></div>
         <div class="key" data-k="e"><kbd>E</kbd><span>Open doors slowly</span></div>
