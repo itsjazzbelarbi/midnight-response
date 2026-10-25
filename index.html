@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Midnight Response</title>
+<meta name="description" content="A first-person horror game on Roblox. Someone called 911 from a school that closed ten years ago. You are the one who answers.">
+<meta property="og:title" content="Midnight Response">
+<meta property="og:description" content="Someone called 911 from a school that closed ten years ago. You are the one who answers.">
+<meta property="og:image" content="media/school-wide.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Courier+Prime:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="intro-on">
+
+<!-- ===== INTRO ===== -->
+<div id="intro" class="idle" role="dialog" aria-label="Incoming call">
+  <div class="panel pl"></div>
+  <div class="panel pr"></div>
+  <div class="edge" aria-hidden="true"></div>
+  <div id="flash" aria-hidden="true"></div>
+
+  <div class="stage">
+    <div class="ringwrap" id="ringwrap">
+      <div class="rings" aria-hidden="true"><i></i><i></i><i></i></div>
+      <p class="ringtxt">Incoming call</p>
+      <p class="ringsub">Ridge Road, 23:47</p>
+      <div class="answer-btns">
+        <button type="button" class="btn" id="pick-sound">Answer with sound</button>
+        <button type="button" class="ghost" id="pick-quiet">Answer without sound</button>
+      </div>
+    </div>
+
+    <div class="cad" id="cad">
+      <div class="cad-head"><span id="clock">23:47:12</span><span>Dispatch, Unit 14</span><span class="rec">rec</span></div>
+      <canvas id="wave" width="640" height="64" aria-hidden="true"></canvas>
+      <div id="cad-log" aria-live="polite"></div>
+    </div>
+
+    <div class="titlecard" id="titlecard" aria-hidden="true">
+      <div class="tc"><span class="tcr" data-t="Midnight"></span><span class="tcr" data-t="Response"></span></div>
+      <i class="tcline"></i>
+      <p class="tcsub">A first-person horror game</p>
+    </div>
+  </div>
+  <button id="skip" type="button" hidden>Skip</button>
+</div>
+
+<div id="grain" aria-hidden="true"><canvas width="160" height="160"></canvas></div>
+<div id="glow" aria-hidden="true"></div>
+<div id="tclock" aria-hidden="true">23:47</div>
+
+<header class="bar" id="bar">
+  <a class="mark" href="#top">Midnight Response</a>
+  <nav>
+    <a href="#about">About</a>
+    <a href="#trailer">Trailer</a>
+    <a href="#scenes">Scenes</a>
+    <a href="#kit">Controls</a>
+    <button type="button" id="sound" class="snd" aria-pressed="false" aria-label="Sound">Sound off</button>
+    <a class="play" href="https://www.roblox.com/games/121720896658939/Midnight-Response" rel="noopener">Play</a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="scene dark" aria-hidden="true"><img src="media/school.jpg" alt="" fetchpriority="high"></div>
+    <div class="scene lit" aria-hidden="true"><img src="media/school.jpg" alt=""></div>
+    <canvas id="rain" aria-hidden="true"></canvas>
+    <div class="fog" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="lights" aria-hidden="true"></div>
+
+    <p class="found" id="found" role="status" aria-live="polite">Second floor. Third window. He wasn't there a second ago.</p>
+
+    <div class="hero-copy" id="herocopy">
+      <h1 aria-label="Midnight Response"><span class="l"><span>Midnight</span></span><span class="l"><span>Response</span></span></h1>
+      <p class="tag" data-in>Someone called 911 from a school that closed ten years ago. You are the one who answers.</p>
+      <div class="cta" data-in>
+        <a class="btn" href="https://www.roblox.com/games/121720896658939/Midnight-Response" rel="noopener">Play on Roblox</a>
+        <a class="ghost" href="#trailer">Watch the trailer</a>
+      </div>
+      <p class="hint" id="hint" data-in>Move your flashlight over the building. Something is watching from a window.</p>
+    </div>
+    <a class="scrollcue" href="#about" data-in aria-label="Scroll down"><span>Scroll</span><i></i></a>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="wrap aboutgrid">
+      <div>
+        <h2 class="rv"><span>Answer the call.</span></h2>
+        <p class="lede" data-fade>A 911 call comes in from a school that closed ten years ago. You are the officer sent to check it out, alone, with a flashlight and a radio.</p>
+      </div>
+      <dl class="facts">
+        <div data-fade><dt>Genre</dt><dd>First-person horror</dd></div>
+        <div data-fade><dt>Platform</dt><dd>Roblox: PC, phone and tablet</dd></div>
+        <div data-fade><dt>Players</dt><dd>Single player</dd></div>
+        <div data-fade><dt>Studio</dt><dd>Belarbi Group Productions</dd></div>
+      </dl>
+    </div>
+    <div class="wrap feats">
+      <article data-fade>
+        <h3>Search in the dark</h3>
+        <p>A flashlight, a radio, a Glock and a Taser. Check every room, open every drawer and watch what the cameras recorded.</p>
+      </article>
+      <article data-fade>
+        <h3>Listen closely</h3>
+        <p>Recorded sound effects, a live dispatch radio and a score by Edvard Grieg. You will want headphones.</p>
+      </article>
+      <article data-fade>
+        <h3>Play it anywhere</h3>
+        <p>Keyboard and mouse on a computer, or built-in touch controls on a phone or iPad.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- PINNED ZOOM -->
+  <section class="band" id="band" aria-label="A figure in a lit window">
+    <div class="band-pin">
+      <div class="band-img"><img src="media/window.jpg" alt="A dark figure standing in a lit second-floor window of a brick school"></div>
+      <div class="band-vig" aria-hidden="true"></div>
+      <p class="b1">The lights are on.</p>
+      <p class="b2">Someone is home.</p>
+    </div>
+  </section>
+
+  <!-- TRAILER -->
+  <section class="trailer" id="trailer">
+    <div class="wrap">
+      <h2 class="rv"><span>Trailer</span></h2>
+      <div class="player" id="player">
+        <video id="vid" preload="none" poster="media/credits-poster.jpg" playsinline controls controlslist="nodownload">
+          <source src="media/credits.mp4" type="video/mp4">
+        </video>
+        <button type="button" id="vidplay" class="vidplay" aria-label="Play trailer"><span></span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCENES -->
+  <section class="scenes" id="scenes">
+    <div class="hz" id="hz">
+      <div class="wrap hz-head"><h2 class="rv"><span>Scenes</span></h2></div>
+      <div class="track" id="track">
+        <figure><button type="button" data-full="media/aerial.jpg" data-cap="Backup arrives from the access road."><img src="media/aerial.jpg" alt="Aerial view of police cars arriving at the school parking lot at night"></button><figcaption>Backup arrives from the access road.</figcaption></figure>
+        <figure><button type="button" data-full="media/cruiser.jpg" data-cap="First unit on scene."><img src="media/cruiser.jpg" alt="Police cruiser behind tape and traffic cones"></button><figcaption>First unit on scene.</figcaption></figure>
+        <figure><button type="button" data-full="media/door.jpg" data-cap="Entry team at the front doors."><img src="media/door.jpg" alt="Armed officers at the school's front steps"></button><figcaption>Entry team at the front doors.</figcaption></figure>
+        <figure><button type="button" data-full="media/forest.jpg" data-cap="The perimeter, from the tree line."><img src="media/forest.jpg" alt="The school seen from the forest edge with emergency lights"></button><figcaption>The perimeter, from the tree line.</figcaption></figure>
+        <figure><button type="button" data-full="media/tape.jpg" data-cap="Nobody crosses the tape."><img src="media/tape.jpg" alt="The school behind police tape"></button><figcaption>Nobody crosses the tape.</figcaption></figure>
+        <figure><button type="button" data-full="media/flood.jpg" data-cap="Floodlights on the tree line."><img src="media/flood.jpg" alt="A floodlight on a tripod cutting through fog"></button><figcaption>Floodlights on the tree line.</figcaption></figure>
+      </div>
+      <div class="hz-prog" aria-hidden="true"><i id="hzprog"></i></div>
+    </div>
+  </section>
+
+  <!-- CONTROLS -->
+  <section class="kit" id="kit">
+    <div class="wrap">
+      <h2 class="rv"><span>Your belt</span></h2>
+      <p class="lede" data-fade>Press a key on your keyboard to try it.</p>
+      <div class="keys" id="keys">
+        <div class="key" data-k="f"><kbd>F</kbd><span>Flashlight</span></div>
+        <div class="key" data-k="e"><kbd>E</kbd><span>Open doors slowly</span></div>
+        <div class="key" data-k="c"><kbd>C</kbd><span>Peek under the door</span></div>
+        <div class="key" data-k="v"><kbd>V</kbd><span>Radio</span></div>
+        <div class="key" data-k="r"><kbd>R</kbd><span>Reload</span></div>
+        <div class="key" data-k="t"><kbd>T</kbd><span>Inspect the Glock</span></div>
+        <div class="key" data-k="x"><kbd>X</kbd><span>Taser</span></div>
+        <div class="key" data-k="p"><kbd>P</kbd><span>Hold: call backup</span></div>
+        <div class="key" data-k="k"><kbd>K</kbd><span>Reopen the briefing</span></div>
+      </div>
+      <p class="aside" data-fade>Phone or iPad? Touch controls are built in.</p>
+    </div>
+  </section>
+
+  <section class="play-sec" id="play">
+    <img src="media/school-wide.jpg" alt="">
+    <div class="wrap narrow">
+      <h2 class="rv"><span>Take the call.</span></h2>
+      <p class="lede" data-fade>Play alone, or in the dark with a friend on voice. Headphones recommended.</p>
+      <div data-fade><a class="btn big ringing" id="play-link" href="https://www.roblox.com/games/121720896658939/Midnight-Response" rel="noopener">Play on Roblox</a></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>Midnight Response is a Belarbi Group Productions game. This is a work of fiction. Not affiliated with Roblox Corporation.</p>
+</footer>
+
+<dialog id="lightbox"><img alt=""><p></p></dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
